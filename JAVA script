@@ -1,0 +1,54 @@
+let [hours, minutes, seconds] = [0, 0, 0];
+let display = document.getElementById("display");
+let interval = null;
+let isRunning = false;
+
+function updateDisplay() {
+  let h = String(hours).padStart(2, '0');
+  let m = String(minutes).padStart(2, '0');
+  let s = String(seconds).padStart(2, '0');
+  display.textContent = `${h}:${m}:${s}`;
+}
+
+function startStop() {
+  if (!isRunning) {
+    interval = setInterval(() => {
+      seconds++;
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      updateDisplay();
+    }, 1000);
+    isRunning = true;
+    event.target.textContent = "Pause";
+  } else {
+    clearInterval(interval);
+    isRunning = false;
+    event.target.textContent = "Start";
+  }
+}
+
+function reset() {
+  clearInterval(interval);
+  [hours, minutes, seconds] = [0, 0, 0];
+  updateDisplay();
+  isRunning = false;
+  document.querySelector(".buttons button:first-child").textContent = "Start";
+  document.getElementById("laps").innerHTML = "";
+}
+
+function lap() {
+  if (isRunning) {
+    const lapTime = display.textContent;
+    const lapItem = document.createElement("li");
+    lapItem.textContent = `Lap: ${lapTime}`;
+    document.getElementById("laps").appendChild(lapItem);
+  }
+}
+
+updateDisplay();
